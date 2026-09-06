@@ -45,7 +45,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="RailSync AI",
+    title="RailLink AI",
     description="AI-Powered Automatic Railway Maintenance Block Planning System",
     version="1.0.0",
     lifespan=lifespan,

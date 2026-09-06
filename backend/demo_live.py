@@ -1,4 +1,4 @@
-"""RailSync AI - Live Ops demo test.
+"""RailLink AI - Live Ops demo test.
 
 Exercises the operational lifecycle and live train simulation:
   approve -> sanction (notice/CA artifacts) -> checkin -> activate ->
@@ -15,8 +15,8 @@ import urllib.error
 import json
 
 BASE = "http://localhost:8000"
-ENGINEER = {"email": "engineer@railsync.in", "password": "engineer123"}
-OFFICER = {"email": "officer@railsync.in", "password": "officer123"}
+ENGINEER = {"email": "engineer@raillink.in", "password": "engineer123"}
+OFFICER = {"email": "officer@raillink.in", "password": "officer123"}
 
 
 def api(method, path, token=None, body=None, timeout=60):
@@ -93,7 +93,7 @@ def main():
         print(("  [PASS] " if cond else "  [FAIL] ") + name)
         return cond
 
-    print("=== RailSync AI Live Ops Demo ===")
+    print("=== RailLink AI Live Ops Demo ===")
 
     et = login(ENGINEER)
     ot = login(OFFICER)

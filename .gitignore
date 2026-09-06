@@ -20,7 +20,7 @@ venv/
 # databases & local data
 *.db
 *.sqlite
-backend/railsync.db.bak
+backend/raillink.db.bak
 backend/data/
 
 # logs

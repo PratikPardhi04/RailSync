@@ -1,4 +1,4 @@
-"""RailSync AI - LangGraph orchestrated agentic planning workflow.
+"""RailLink AI - LangGraph orchestrated agentic planning workflow.
 
 This replaces the former sequential function-chain engine. The graph is:
 

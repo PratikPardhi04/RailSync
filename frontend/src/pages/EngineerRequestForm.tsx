@@ -288,7 +288,7 @@ export default function EngineerRequestForm() {
   const activeComp = STEPS[step - 1]
 
   return (
-    <Layout title="Raise Block Request" subtitle="6-step wizard · submitted directly to the RailSync AI / LangGraph pipeline">
+    <Layout title="Raise Block Request" subtitle="6-step wizard · submitted directly to the RailLink AI / LangGraph pipeline">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* stepper */}
         <div className="flex items-start overflow-x-auto pb-1">
@@ -614,7 +614,7 @@ export default function EngineerRequestForm() {
 
                   <div className="rounded-xl border border-so-cyan/30 bg-so-cyan/10 px-5 py-4">
                     <p className="text-xs font-semibold text-so-cyan flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4" /> Submitting will create the request and immediately send it to the RailSync AI / LangGraph planning pipeline.
+                      <TrendingUp className="w-4 h-4" /> Submitting will create the request and immediately send it to the RailLink AI / LangGraph planning pipeline.
                     </p>
                     <p className="text-xs text-so-dim mt-1">
                       A LangGraph run will validate data, retrieve RAG &amp; web evidence, run CP-SAT optimization, simulate train impact, and gate results — then produce a classified plan report. You will land on the live pipeline view.
@@ -661,7 +661,7 @@ export default function EngineerRequestForm() {
                 )}
               </div>
               <h3 className="text-so-text font-bold text-lg">
-                {submitPhase === 'done' ? 'Workflow launched' : 'Submitting to RailSync AI'}
+                {submitPhase === 'done' ? 'Workflow launched' : 'Submitting to RailLink AI'}
               </h3>
               <p className="text-xs text-so-dim mt-1 mb-6">
                 {createdId ? `Request MR-${String(createdId).padStart(5, '0')} being routed into the LangGraph pipeline` : 'Connecting to the planning service…'}

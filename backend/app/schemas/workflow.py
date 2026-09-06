@@ -1,4 +1,4 @@
-"""RailSync AI - Strongly typed workflow schemas.
+"""RailLink AI - Strongly typed workflow schemas.
 
 Every agent and deterministic engine publishes data that conforms to one of
 these Pydantic models. LLM output is validated against these schemas before it

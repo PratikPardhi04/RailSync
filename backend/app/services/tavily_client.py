@@ -117,7 +117,7 @@ def tavily_search(
                 headers={
                     "Content-Type": "application/json",
                     "Authorization": f"Bearer {api_key}",
-                    "User-Agent": "railsync-ai/1.0",
+                    "User-Agent": "raillink-ai/1.0",
                 },
                 method="POST",
             )

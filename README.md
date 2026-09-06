@@ -1,4 +1,4 @@
-# RailSync AI
+# RailLink AI
 
 **AI-Powered Automatic Railway Maintenance Block Planning System**
 
@@ -99,17 +99,17 @@ Frontend runs on http://localhost:5173
 
 | Role | Email | Password |
 |------|-------|----------|
-| Engineer | engineer@railsync.in | engineer123 |
-| Officer | officer@railsync.in | officer123 |
+| Engineer | engineer@raillink.in | engineer123 |
+| Officer | officer@raillink.in | officer123 |
 
 ### Demo Scenario
 
-1. Login as Engineer (engineer@railsync.in / engineer123)
+1. Login as Engineer (engineer@raillink.in / engineer123)
 2. Click "Raise Block Request"
 3. Fill form (defaults match demo scenario) → Submit
 4. Click "Start AI Analysis" → Watch agents execute
 5. Logout
-6. Login as Officer (officer@railsync.in / officer123)
+6. Login as Officer (officer@raillink.in / officer123)
 7. Click "Review Plan" on pending request
 8. Click "Reject & Request Replanning"
 9. Enter: "Avoid 10:00-13:00 due to passenger train" → Submit
@@ -171,8 +171,8 @@ python demo_live.py       # Ops lifecycle + live sim + dynamic replan
 |----------|---------|-------------|
 | DEMO_MODE | true | Use deterministic agents (no LLM) |
 | GROQ_API_KEY | (empty) | Groq API key for real LLM |
-| DATABASE_URL | sqlite:///./railsync.db | Database connection |
-| SECRET_KEY | railsync-secret-key... | JWT secret |
+| DATABASE_URL | sqlite:///./raillink.db | Database connection |
+| SECRET_KEY | raillink-secret-key... | JWT secret |
 | FRONTEND_URL | http://localhost:5173 | Frontend URL for CORS |
 
 ## Project Structure

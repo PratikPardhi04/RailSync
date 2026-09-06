@@ -1,7 +1,7 @@
 [project]
-name = "railsync-ai-backend"
+name = "raillink-ai-backend"
 version = "0.1.0"
-description = "RailSync AI agentic planning brain"
+description = "RailLink AI agentic planning brain"
 requires-python = ">=3.10"
 dependencies = [
     "fastapi==0.104.1",

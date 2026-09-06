@@ -83,7 +83,7 @@ export default function Landing() {
               </div>
               <div>
                 <h1 className="text-base font-extrabold tracking-tight">
-                  <span className="text-railway-darkblue">RailSync</span>{' '}
+                  <span className="text-railway-darkblue">RailLink</span>{' '}
                   <span className="text-railway-accent">AI</span>
                 </h1>
                 <p className="text-[11px] text-gray-500 -mt-0.5">Railway Block Planning</p>
@@ -122,7 +122,7 @@ export default function Landing() {
             <span className="text-railway-accent">zero schedule chaos.</span>
           </h2>
           <p className="text-lg text-gray-600 mt-6 leading-relaxed max-w-2xl mx-auto">
-            RailSync AI analyzes the congested Pune–Mumbai corridor, generates
+            RailLink AI analyzes the congested Pune–Mumbai corridor, generates
             least-impact maintenance block plans, and lets officers approve with
             confidence — all in one platform.
           </p>
@@ -257,7 +257,7 @@ export default function Landing() {
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <TrainFront className="w-4 h-4" />
-            RailSync AI — Railway Maintenance Block Planning System
+            RailLink AI — Railway Maintenance Block Planning System
           </div>
           <p className="text-xs text-gray-400">
             Prototype / simulated data. Not for live railway operations.

@@ -6,13 +6,13 @@ export function useAuth() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const stored = localStorage.getItem('railsync_user')
+    const stored = localStorage.getItem('raillink_user')
     if (stored) {
       try {
         setUser(JSON.parse(stored))
       } catch {
-        localStorage.removeItem('railsync_user')
-        localStorage.removeItem('railsync_token')
+        localStorage.removeItem('raillink_user')
+        localStorage.removeItem('raillink_token')
       }
     }
     setLoading(false)
@@ -20,14 +20,14 @@ export function useAuth() {
 
   const login = useCallback((userData: User, token: string) => {
     setUser(userData)
-    localStorage.setItem('railsync_user', JSON.stringify(userData))
-    localStorage.setItem('railsync_token', token)
+    localStorage.setItem('raillink_user', JSON.stringify(userData))
+    localStorage.setItem('raillink_token', token)
   }, [])
 
   const logout = useCallback(() => {
     setUser(null)
-    localStorage.removeItem('railsync_user')
-    localStorage.removeItem('railsync_token')
+    localStorage.removeItem('raillink_user')
+    localStorage.removeItem('raillink_token')
   }, [])
 
   return { user, login, logout, loading }

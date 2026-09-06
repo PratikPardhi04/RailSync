@@ -3,7 +3,7 @@ import type { User, LoginResponse, MaintenanceRequest, MaintenanceRequestCreate,
 const BASE = `${import.meta.env.VITE_API_URL || ''}/api`
 
 async function request<T>(url: string, options?: RequestInit): Promise<T> {
-  const token = localStorage.getItem('railsync_token')
+  const token = localStorage.getItem('raillink_token')
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options?.headers as Record<string, string> || {}),

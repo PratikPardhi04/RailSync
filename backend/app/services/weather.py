@@ -60,7 +60,7 @@ def _try_open_meteo(section: str) -> dict:
         "&timezone=Asia%2FKolkata&forecast_days=2"
     )
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "railsync-ai/1.0"})
+        req = urllib.request.Request(url, headers={"User-Agent": "raillink-ai/1.0"})
         with urllib.request.urlopen(req, timeout=6) as resp:
             payload = json.loads(resp.read().decode("utf-8"))
         daily = (payload.get("daily") or {})

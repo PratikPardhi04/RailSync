@@ -29,7 +29,7 @@ health = api("GET", "/api/health")
 print("Health:", health)
 
 print("\n=== 1. LOGIN AS ENGINEER ===")
-login = api("POST", "/api/auth/login", {"email": "engineer@railsync.in", "password": "engineer123"})
+login = api("POST", "/api/auth/login", {"email": "engineer@raillink.in", "password": "engineer123"})
 if "access_token" not in login:
     print("LOGIN FAILED:", login)
     sys.exit(1)
@@ -81,7 +81,7 @@ else:
     print("No report:", report)
 
 print("\n=== 7. LOGIN AS OFFICER ===")
-officer_login = api("POST", "/api/auth/login", {"email": "officer@railsync.in", "password": "officer123"})
+officer_login = api("POST", "/api/auth/login", {"email": "officer@raillink.in", "password": "officer123"})
 officer_token = officer_login["access_token"]
 print("Officer logged in:", officer_login["user"]["name"], officer_login["user"]["role"])
 

@@ -1,4 +1,4 @@
-"""RailSync AI - Automated end-to-end demo scenario test.
+"""RailLink AI - Automated end-to-end demo scenario test.
 
 Replicates the SIH 2026 demo: Engineer submits a maintenance request,
 the AI agent pipeline generates Plan V1, the Officer rejects it (reason
@@ -18,8 +18,8 @@ BASE = "http://localhost:8000"
 PASS = 0
 FAIL = 1
 
-ENGINEER = {"email": "engineer@railsync.in", "password": "engineer123"}
-OFFICER = {"email": "officer@railsync.in", "password": "officer123"}
+ENGINEER = {"email": "engineer@raillink.in", "password": "engineer123"}
+OFFICER = {"email": "officer@raillink.in", "password": "officer123"}
 
 
 def api(method, path, token=None, body=None):
@@ -60,7 +60,7 @@ def main():
         print(("  [PASS] " if cond else "  [FAIL] ") + name)
         return cond
 
-    print("=== RailSync AI Demo Scenario ===")
+    print("=== RailLink AI Demo Scenario ===")
 
     et = login(ENGINEER)
     print("1. Engineer logged in")

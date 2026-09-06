@@ -3,7 +3,7 @@ __pycache__/
 .pytest_cache/
 *.db
 *.db.bak
-railsync.db*
+raillink.db*
 data/
 server.log
 server.err.log

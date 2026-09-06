@@ -36,7 +36,7 @@ export default function Layout({ children, title, subtitle }: LayoutProps) {
               </div>
               <div>
                 <h1 className="text-base font-extrabold tracking-tight">
-                  <span className="text-white">RailSync</span>{' '}
+                  <span className="text-white">RailLink</span>{' '}
                   <span className="text-white">AI</span>
                 </h1>
                 <p className="text-[11px] text-blue-200 -mt-0.5">{subtitle || (user?.role === 'officer' ? 'Officer Control Portal' : 'Engineer Portal')}</p>
