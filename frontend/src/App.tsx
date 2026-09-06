@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
 import Login from './pages/Login'
+import Landing from './pages/Landing'
 import EngineerDashboard from './pages/EngineerDashboard'
 import EngineerRequestForm from './pages/EngineerRequestForm'
 import AIProcessing from './pages/AIProcessing'
@@ -22,6 +23,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/engineer" element={<ProtectedRoute role="engineer"><EngineerDashboard /></ProtectedRoute>} />
         <Route path="/engineer/new" element={<ProtectedRoute role="engineer"><EngineerRequestForm /></ProtectedRoute>} />
@@ -29,7 +31,7 @@ export default function App() {
         <Route path="/officer" element={<ProtectedRoute role="officer"><OfficerDashboard /></ProtectedRoute>} />
         <Route path="/officer/review/:id" element={<ProtectedRoute role="officer"><OfficerReview /></ProtectedRoute>} />
         <Route path="/live" element={<ProtectedRoute><LiveOps /></ProtectedRoute>} />
-        <Route path="*" element={<Navigate to={user?.role === 'officer' ? '/officer' : user?.role === 'engineer' ? '/engineer' : '/login'} replace />} />
+        <Route path="*" element={<Navigate to={user?.role === 'officer' ? '/officer' : user?.role === 'engineer' ? '/engineer' : '/'} replace />} />
       </Routes>
     </BrowserRouter>
   )
