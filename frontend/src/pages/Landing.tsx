@@ -5,6 +5,7 @@ import {
   Users, ArrowRight, CircuitBoard, LineChart, Workflow, MapPin,
 } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
+import AgentWorkflowDemo from '../components/AgentWorkflowDemo'
 
 const FEATURES = [
   {
@@ -91,6 +92,7 @@ export default function Landing() {
             <nav className="hidden md:flex items-center gap-8 text-sm text-blue-100">
               <a href="#features" className="hover:text-white transition-colors font-medium">Features</a>
               <a href="#how-it-works" className="hover:text-white transition-colors font-medium">How it works</a>
+              <a href="#workflow" className="hover:text-white transition-colors font-medium">The Agent</a>
               <a href="#demo" className="hover:text-white transition-colors font-medium">Demo</a>
               <button
                 onClick={enterPortal}
@@ -218,6 +220,13 @@ export default function Landing() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Agent workflow demo */}
+      <section id="workflow" className="border-t border-white/10 bg-railway-darkblue py-20">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+          <AgentWorkflowDemo />
         </div>
       </section>
 

@@ -387,3 +387,8 @@
 .stat-card--light { background: #F4F6F8; border-color: #CBD5E1; }
 .stat-card--light .stat-value { color: #17202A; }
 .stat-card--light .stat-label { color: #4B5563; }
+
+/* animated flow of active edges across the workflow graph */
+@keyframes dash-flow {
+  to { stroke-dashoffset: -24; }
+}
