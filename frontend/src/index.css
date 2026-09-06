@@ -1,0 +1,389 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #F4F6F8;
+    color: #17202A;
+    min-height: 100vh;
+  }
+  ::selection {
+    background: rgba(29, 95, 167, 0.25);
+    color: #0B1F3A;
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #E9EEF4;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+  }
+}
+
+@layer components {
+  .rail-canvas {
+    background-color: #F4F6F8;
+  }
+
+  .glass {
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px -18px rgba(11, 31, 58, 0.28);
+  }
+
+  .glass-deep {
+    background: #F4F6F8;
+    border: 1px solid #CBD5E1;
+    border-radius: 14px;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border: 1px solid transparent;
+  }
+
+  .h-overline {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #4B5563;
+  }
+
+  .kv {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+    padding: 0.28rem 0;
+    border-bottom: 1px dashed #CBD5E1;
+  }
+  .kv:last-child {
+    border-bottom: none;
+  }
+  .kv k {
+    color: #4B5563;
+  }
+  .kv v {
+    color: #17202A;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .btn-rail {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 10px;
+    padding: 0.55rem 1.15rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    background: #1D5FA7;
+    color: #FFFFFF;
+    box-shadow: 0 6px 18px -10px rgba(11, 31, 58, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease;
+  }
+  .btn-rail:hover {
+    background: #123B66;
+    box-shadow: 0 8px 22px -10px rgba(11, 31, 58, 0.5);
+  }
+  .btn-rail:active {
+    transform: translateY(1px);
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    font-size: 0.82rem;
+    color: #17202A;
+    border: 1px solid #CBD5E1;
+    background: #FFFFFF;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+  }
+  .btn-ghost:hover {
+    border-color: #1D5FA7;
+    background: rgba(29, 95, 167, 0.06);
+  }
+
+  .tab-rail {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-radius: 10px;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #4B5563;
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .tab-rail:hover {
+    color: #123B66;
+    background: rgba(29, 95, 167, 0.07);
+  }
+  .tab-rail.active {
+    color: #1D5FA7;
+    background: rgba(29, 95, 167, 0.12);
+    border-color: rgba(29, 95, 167, 0.4);
+  }
+}
+
+/* =====================================================================
+   Global contrast / theme token layer
+   Centralized in CSS variables (single source of truth). All overrides
+   are scoped to .rail-canvas so authenticated app pages get the light
+   "Indian Railways" treatment, while standalone screens (e.g. /login)
+   remain untouched.
+   ===================================================================== */
+
+:root {
+  /* text hierarchy (dark-on-light) */
+  --tx-1: #17202A;   /* primary    -> WCAG AAA on white surfaces */
+  --tx-2: #1F2937;   /* strong primary */
+  --tx-3: #334155;   /* secondary  -> AA */
+  --tx-4: #4B5563;   /* muted      -> AA */
+  --tx-5: #64748B;   /* de-emphasized but readable -> AA */
+  --tx-6: #64748B;   /* weakest acceptable -> AA */
+
+  /* semantic text (dark enough on light tints) */
+  --tx-green:  #18794E;
+  --tx-cyan:   #1D5FA7;
+  --tx-blue:   #1D5FA7;
+  --tx-amber:  #A15C00;
+  --tx-orange: #B45309;
+  --tx-red:    #B3261E;
+  --tx-yellow: #9A6700;
+  --tx-violet: #123B66;
+
+  /* surfaces / lines (light) */
+  --surf-card: #FFFFFF;   /* card surface (replaces bg-white) */
+  --surf-soft: #F4F6F8;   /* soft inset (replaces bg-gray-50/100) */
+  --surf-line: #CBD5E1;   /* card border (replaces border-gray-200) */
+  --surf-line-strong: #94A3B8; /* input border (replaces border-gray-300) */
+  --line-soft: #E8EEF4;   /* table divider (replaces border-gray-100) */
+
+  /* hover / focus / selected (light on light, high-contrast text) */
+  --hover-subtle: #EEF3F8;   /* row / row-hover highlight */
+  --hover-strong: #E2E9F2;   /* button / option / stronger hover */
+}
+
+/* ---- scoped surface overrides (light cards) ---- */
+.rail-canvas .bg-white { background: var(--surf-card); }
+.rail-canvas .bg-gray-50 { background: var(--surf-soft); }
+.rail-canvas .bg-gray-100 { background: #EEF3F7; }
+.rail-canvas .bg-gray-200 { background: #E2E8F0; }
+.rail-canvas .bg-gray-300 { background: #CBD5E1; }
+
+/* opaque variants of the same surfaces (opacity syntax generates a separate
+   class, so the token layer must cover them too - always a light panel behind
+   dark text) */
+.rail-canvas .bg-white\/40, .rail-canvas .bg-white\/50,
+.rail-canvas .bg-white\/60, .rail-canvas .bg-white\/70,
+.rail-canvas .bg-white\/80 { background: var(--surf-card); }
+.rail-canvas .bg-gray-50\/40, .rail-canvas .bg-gray-50\/50,
+.rail-canvas .bg-gray-50\/60, .rail-canvas .bg-gray-50\/70,
+.rail-canvas .bg-gray-50\/80 { background: var(--surf-soft); }
+.rail-canvas .bg-gray-100\/40, .rail-canvas .bg-gray-100\/50,
+.rail-canvas .bg-gray-100\/60, .rail-canvas .bg-gray-100\/70,
+.rail-canvas .bg-gray-100\/80 { background: #EEF3F7; }
+.rail-canvas .bg-gray-200\/50, .rail-canvas .bg-gray-200\/60,
+.rail-canvas .bg-gray-200\/70 { background: #E2E8F0; }
+
+/* ---- scoped border overrides ---- */
+.rail-canvas .border-gray-100 { border-color: var(--line-soft); }
+.rail-canvas .border-gray-200 { border-color: var(--surf-line); }
+.rail-canvas .border-gray-300 { border-color: var(--surf-line-strong); }
+
+/* ---- scoped text hierarchy ---- */
+.rail-canvas .text-gray-900 { color: var(--tx-1); }
+.rail-canvas .text-gray-800 { color: var(--tx-2); }
+.rail-canvas .text-gray-700 { color: var(--tx-3); }
+.rail-canvas .text-gray-600 { color: var(--tx-4); }
+.rail-canvas .text-gray-500 { color: var(--tx-5); }
+.rail-canvas .text-gray-400 { color: #7C8CA0; }
+.rail-canvas .text-gray-300 { color: #A4B1C2; }
+.rail-canvas .text-gray-200 { color: #B7C3D0; }
+.rail-canvas .text-gray-100 { color: #CBD5E1; }
+.rail-canvas .text-gray-50  { color: #D6DEE8; }
+
+/* ---- scoped semantic text (dark on light) ---- */
+.rail-canvas .text-green-500, .rail-canvas .text-green-600,
+.rail-canvas .text-green-700, .rail-canvas .text-green-800,
+.rail-canvas .text-green-900 { color: var(--tx-green); }
+.rail-canvas .text-emerald-500, .rail-canvas .text-emerald-600,
+.rail-canvas .text-emerald-700 { color: var(--tx-green); }
+.rail-canvas .text-cyan-500, .rail-canvas .text-cyan-600,
+.rail-canvas .text-cyan-700 { color: var(--tx-cyan); }
+.rail-canvas .text-blue-500, .rail-canvas .text-blue-600,
+.rail-canvas .text-blue-700, .rail-canvas .text-blue-800,
+.rail-canvas .text-blue-900 { color: var(--tx-blue); }
+.rail-canvas .text-amber-500, .rail-canvas .text-amber-600,
+.rail-canvas .text-amber-700, .rail-canvas .text-amber-800,
+.rail-canvas .text-amber-900 { color: var(--tx-amber); }
+.rail-canvas .text-orange-500, .rail-canvas .text-orange-600,
+.rail-canvas .text-orange-700 { color: var(--tx-orange); }
+.rail-canvas .text-red-500, .rail-canvas .text-red-600,
+.rail-canvas .text-red-700, .rail-canvas .text-red-800,
+.rail-canvas .text-red-900 { color: var(--tx-red); }
+.rail-canvas .text-yellow-500, .rail-canvas .text-yellow-600,
+.rail-canvas .text-yellow-700 { color: var(--tx-yellow); }
+.rail-canvas .text-violet-500, .rail-canvas .text-violet-600,
+.rail-canvas .text-violet-700 { color: var(--tx-violet); }
+.rail-canvas .text-indigo-500, .rail-canvas .text-indigo-600,
+.rail-canvas .text-indigo-700 { color: var(--tx-blue); }
+.rail-canvas .text-railway-accent { color: var(--tx-blue); }
+
+/* ---- scoped tinted notice surfaces ---- */
+.rail-canvas .bg-blue-50 { background: rgba(29, 95, 167, 0.08); }
+.rail-canvas .bg-emerald-50, .rail-canvas .bg-green-50 { background: rgba(24, 121, 78, 0.08); }
+.rail-canvas .bg-amber-50 { background: rgba(161, 92, 0, 0.08); }
+.rail-canvas .bg-red-50 { background: rgba(179, 38, 30, 0.08); }
+.rail-canvas .bg-green-100 { background: rgba(24, 121, 78, 0.12); }
+.rail-canvas .bg-blue-100 { background: rgba(29, 95, 167, 0.12); }
+.rail-canvas .bg-red-100 { background: rgba(179, 38, 30, 0.12); }
+.rail-canvas .bg-amber-100 { background: rgba(161, 92, 0, 0.12); }
+.rail-canvas .bg-orange-100 { background: rgba(180, 83, 9, 0.12); }
+.rail-canvas .bg-indigo-100 { background: rgba(29, 95, 167, 0.13); }
+.rail-canvas .bg-purple-50 { background: rgba(18, 59, 102, 0.08); }
+.rail-canvas .bg-purple-100 { background: rgba(18, 59, 102, 0.12); }
+.rail-canvas .bg-violet-50 { background: rgba(18, 59, 102, 0.08); }
+.rail-canvas .bg-fuchsia-50 { background: rgba(18, 59, 102, 0.07); }
+.rail-canvas .bg-sky-50 { background: rgba(29, 95, 167, 0.08); }
+.rail-canvas .bg-teal-50 { background: rgba(24, 121, 78, 0.08); }
+.rail-canvas .bg-lime-50 { background: rgba(101, 116, 66, 0.08); }
+.rail-canvas .border-blue-200 { border-color: rgba(29, 95, 167, 0.35); }
+.rail-canvas .border-emerald-200, .rail-canvas .border-green-200 { border-color: rgba(24, 121, 78, 0.35); }
+.rail-canvas .border-amber-200 { border-color: rgba(161, 92, 0, 0.35); }
+.rail-canvas .border-red-200 { border-color: rgba(179, 38, 30, 0.35); }
+.rail-canvas .border-orange-200 { border-color: rgba(180, 83, 9, 0.35); }
+.rail-canvas .border-indigo-200 { border-color: rgba(29, 95, 167, 0.35); }
+.rail-canvas .border-purple-200 { border-color: rgba(18, 59, 102, 0.35); }
+.rail-canvas .border-violet-200 { border-color: rgba(18, 59, 102, 0.35); }
+.rail-canvas .border-fuchsia-200 { border-color: rgba(18, 59, 102, 0.35); }
+.rail-canvas .border-sky-200 { border-color: rgba(29, 95, 167, 0.35); }
+.rail-canvas .border-teal-200 { border-color: rgba(24, 121, 78, 0.35); }
+.rail-canvas .border-lime-200 { border-color: rgba(101, 116, 66, 0.35); }
+.rail-canvas .border-red-300 { border-color: rgba(179, 38, 30, 0.5); }
+.rail-canvas .border-slate-200 { border-color: var(--surf-line); }
+.rail-canvas .border-stone-200 { border-color: var(--surf-line); }
+.rail-canvas .border-slate-100 { border-color: var(--line-soft); }
+.rail-canvas .border-stone-100 { border-color: var(--line-soft); }
+
+/* ---- scoped solid buttons / status bars (palette matches) ---- */
+.rail-canvas .bg-blue-500, .rail-canvas .bg-blue-600 { background-color: #1D5FA7; }
+.rail-canvas .hover\:bg-blue-700:hover { background-color: #123B66; }
+.rail-canvas .bg-red-500, .rail-canvas .bg-red-600 { background-color: #B3261E; }
+.rail-canvas .hover\:bg-red-700:hover { background-color: #8C1F1A; }
+.rail-canvas .bg-emerald-600, .rail-canvas .bg-green-600 { background-color: #18794E; }
+.rail-canvas .hover\:bg-emerald-700:hover, .rail-canvas .hover\:bg-green-700:hover { background-color: #125F3E; }
+.rail-canvas .bg-amber-600 { background-color: #A15C00; }
+.rail-canvas .hover\:bg-amber-700:hover { background-color: #7C4700; }
+.rail-canvas .bg-gray-700 { background-color: #123B66; }
+.rail-canvas .hover\:bg-gray-800:hover { background-color: #0B1F3A; }
+.rail-canvas .bg-slate-100 { background: #E8EEF4; }
+.rail-canvas .text-slate-600 { color: var(--tx-4); }
+.rail-canvas .bg-stone-100 { background: #EEF0F3; }
+.rail-canvas .text-stone-600 { color: #57534E; }
+
+/* ---- form inputs: keep readable on light cards ---- */
+.rail-canvas input[type='text'],
+.rail-canvas input[type='email'],
+.rail-canvas input[type='password'],
+.rail-canvas input[type='number'],
+.rail-canvas input[type='date'],
+.rail-canvas input[type='time'],
+.rail-canvas select,
+.rail-canvas textarea {
+  background: #FFFFFF;
+  border-color: var(--surf-line-strong);
+  color: var(--tx-1);
+  caret-color: var(--tx-cyan);
+}
+.rail-canvas input::placeholder,
+.rail-canvas textarea::placeholder {
+  color: var(--tx-6);
+  opacity: 1;
+}
+.rail-canvas select option {
+  background: #FFFFFF;
+  color: var(--tx-1);
+}
+
+/* ---- scoped hover / focus / selected states (never a dark surface under
+   dark text) ---- */
+.rail-canvas .hover\:bg-gray-50:hover { background: var(--hover-subtle); }
+.rail-canvas .hover\:bg-gray-100:hover { background: var(--hover-strong); }
+.rail-canvas .hover\:bg-gray-200:hover { background: var(--hover-strong); }
+.rail-canvas .hover\:bg-gray-300:hover { background: var(--hover-strong); }
+.rail-canvas .hover\:bg-white:hover { background: #F6F9FC; }
+.rail-canvas .hover\:bg-gray-50:hover,
+.rail-canvas .hover\:bg-gray-100:hover,
+.rail-canvas .hover\:bg-gray-200:hover,
+.rail-canvas .hover\:bg-gray-300:hover,
+.rail-canvas .hover\:bg-white:hover {
+  border-color: var(--surf-line-strong);
+}
+.rail-canvas tr:hover {
+  background: var(--hover-subtle);
+}
+.rail-canvas tr:hover td,
+.rail-canvas tr:hover th {
+  color: var(--tx-1);
+}
+.rail-canvas option:hover,
+.rail-canvas option:focus,
+.rail-canvas option:checked {
+  background: var(--hover-strong);
+  color: var(--tx-1);
+}
+.rail-canvas [class*='hover:bg-white/']:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* =====================================================================
+   Shared stat-card component (dashboard tiles).
+   Foreground colors are bound to the surface class centrally, so a light
+   card can never pair with light text and vice versa.
+   ===================================================================== */
+.stat-card {
+  border: 1px solid var(--surf-line);
+  border-radius: 0.5rem;
+  background: var(--surf-card);
+}
+.stat-card .stat-value { color: var(--tx-1); }  /* light surface -> dark value (AA+) */
+.stat-card .stat-label { color: var(--tx-4); }  /* light surface -> muted label (AA) */
+.stat-card--blue   { background: rgba(29, 95, 167, 0.08);  border-color: rgba(29, 95, 167, 0.35); }
+.stat-card--purple { background: rgba(18, 59, 102, 0.08);  border-color: rgba(18, 59, 102, 0.35); }
+.stat-card--amber  { background: rgba(161, 92, 0, 0.08);   border-color: rgba(161, 92, 0, 0.35); }
+.stat-card--green  { background: rgba(24, 121, 78, 0.08);  border-color: rgba(24, 121, 78, 0.35); }
+.stat-card--red    { background: rgba(179, 38, 30, 0.08);  border-color: rgba(179, 38, 30, 0.35); }
+/* intentional light card variant: dark high-contrast foreground */
+.stat-card--light { background: #F4F6F8; border-color: #CBD5E1; }
+.stat-card--light .stat-value { color: #17202A; }
+.stat-card--light .stat-label { color: #4B5563; }
