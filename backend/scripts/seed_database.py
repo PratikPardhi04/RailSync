@@ -91,7 +91,9 @@ def seed_all():
         db.commit()
 
     except Exception as e:
+        print(f"SEED ERROR: {e}", flush=True)
         db.rollback()
+        raise
     finally:
         db.close()
 
