@@ -6,7 +6,7 @@ import {
   StepBack, StepForward,
 } from 'lucide-react'
 import {
-  BANDS, EDGES, NODES, PHASE_OF, type GraphEdge, type GraphNode,
+  BANDS, EDGES, NODES, NODE_H, NODE_W, PHASE_OF, type GraphEdge, type GraphNode,
 } from '../lib/workflowTopology'
 
 const ICONS: Record<string, any> = {
@@ -48,19 +48,17 @@ const DESCRIPTIONS: Record<string, string> = {
   end: 'Pending review — sent to the officer, who can approve or reject (rejection triggers a live replan).',
 }
 
+// light theme node states (on white card)
 const STATE_STYLE: Record<string, { fill: string; stroke: string; text: string }> = {
-  idle:   { fill: 'rgba(255,255,255,0.05)',  stroke: 'rgba(148,163,184,0.45)', text: 'rgba(148,163,184,0.85)' },
-  active: { fill: 'rgba(29,95,167,0.35)',     stroke: '#60A5FA',               text: '#EAF2FF' },
-  done:   { fill: 'rgba(24,121,78,0.18)',     stroke: 'rgba(52,211,153,0.8)',  text: 'rgba(167,243,208,0.95)' },
+  idle:   { fill: 'rgba(244,246,248,0.75)', stroke: 'rgba(148,163,184,0.7)', text: '#64748B' },
+  active: { fill: 'rgba(29,95,167,0.14)',    stroke: '#1D5FA7',               text: '#123B66' },
+  done:   { fill: 'rgba(24,121,78,0.14)',    stroke: '#18794E',               text: '#14563A' },
 }
-
-const ORDER: Record<string, number> = {}
-NODES.forEach((n, i) => (ORDER[n.id] = i))
-
-const SPEEDS = [2200, 1300, 800]
 
 const STEP_IDX: Record<string, number> = {}
 STEPS.forEach((id, i) => (STEP_IDX[id] = i))
+
+const SPEEDS = [2200, 1300, 800]
 
 export default function AgentWorkflowDemo() {
   const [step, setStep] = useState(0)
@@ -84,7 +82,8 @@ export default function AgentWorkflowDemo() {
     if (!scrollRef.current || !svgWrapRef.current) return
     const node = NODES.find(n => n.id === STEPS[step])
     if (!node) return
-    const scale = svgWrapRef.current.clientWidth / 1120
+    const wrap = svgWrapRef.current
+    const scale = wrap.clientWidth / 1120
     const top = node.y * scale - scrollRef.current.clientHeight / 2 + 210
     scrollRef.current.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
   }, [step])
@@ -105,11 +104,11 @@ export default function AgentWorkflowDemo() {
   }
 
   const edgeColor = (e: GraphEdge): string => {
-    if (e.loop) return '#F59E0B'
+    if (e.loop) return '#A15C00'
     const s = edgeState(e)
-    if (s === 'done') return '#34D399'
-    if (s === 'active') return '#60A5FA'
-    return 'rgba(148,163,184,0.35)'
+    if (s === 'done') return '#18794E'
+    if (s === 'active') return '#1D5FA7'
+    return 'rgba(148,163,184,0.5)'
   }
 
   const byId = useMemo(() => {
@@ -121,13 +120,13 @@ export default function AgentWorkflowDemo() {
   const advance = (delta: number) => setStep(s => (s + delta + STEPS.length) % STEPS.length)
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-white/5 overflow-hidden">
+    <div className="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden">
       <div className="px-6 sm:px-10 pt-8 pb-4">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="h-overline text-blue-300">Agentic Pipeline</p>
-            <h3 className="text-2xl sm:text-3xl font-extrabold mt-2">Watch the AI think, step by step</h3>
-            <p className="text-blue-100 mt-2 max-w-xl text-sm">
+            <p className="h-overline">Agentic Pipeline</p>
+            <h3 className="text-2xl sm:text-3xl font-extrabold mt-2 text-gray-900">Watch the AI think, step by step</h3>
+            <p className="text-gray-600 mt-2 max-w-xl text-sm">
               The pipeline flows automatically in slow motion. Follow the highlighted node
               and read what each agent does before the plan reaches the officer.
             </p>
@@ -136,18 +135,18 @@ export default function AgentWorkflowDemo() {
             <button onClick={() => setPlaying(p => !p)} className="btn-rail w-10 h-10 !p-0 flex items-center justify-center" title={playing ? 'Pause' : 'Play'}>
               {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
             </button>
-            <button onClick={() => { setPlaying(false); setStep(0) }} className="btn-ghost w-10 h-10 !p-0 flex items-center justify-center !bg-white/10 !border-white/20 !text-white" title="Restart">
+            <button onClick={() => { setPlaying(false); setStep(0) }} className="btn-ghost w-10 h-10 !p-0 flex items-center justify-center" title="Restart">
               <RotateCcw className="w-4 h-4" />
             </button>
-            <button onClick={() => { setPlaying(false); advance(-1) }} className="btn-ghost w-10 h-10 !p-0 flex items-center justify-center !bg-white/10 !border-white/20 !text-white" title="Previous">
+            <button onClick={() => { setPlaying(false); advance(-1) }} className="btn-ghost w-10 h-10 !p-0 flex items-center justify-center" title="Previous">
               <StepBack className="w-4 h-4" />
             </button>
-            <button onClick={() => { setPlaying(false); advance(1) }} className="btn-ghost w-10 h-10 !p-0 flex items-center justify-center !bg-white/10 !border-white/20 !text-white" title="Next">
+            <button onClick={() => { setPlaying(false); advance(1) }} className="btn-ghost w-10 h-10 !p-0 flex items-center justify-center" title="Next">
               <StepForward className="w-4 h-4" />
             </button>
             <button
               onClick={() => setSpeed(s => (s + 1) % SPEEDS.length)}
-              className="btn-ghost !bg-white/10 !border-white/20 !text-white px-3 py-2 text-xs font-semibold"
+              className="btn-ghost px-3 py-2 text-xs font-semibold"
               title="Playback speed"
             >
               {['1×', '2×', '3×'][speed]}
@@ -170,9 +169,9 @@ export default function AgentWorkflowDemo() {
                 return (
                   <g key={b.id}>
                     <rect x={x0} y={b.y0} width={x1 - x0} height={b.y1 - b.y0} rx={14}
-                      fill="rgba(147,197,253,0.04)" stroke="rgba(147,197,253,0.18)" strokeDasharray="5 7" />
+                      fill="rgba(29,95,167,0.03)" stroke="rgba(29,95,167,0.18)" strokeDasharray="5 7" />
                     <text x={x0 + 12} y={b.y0 + 17} fontSize="10" fontWeight="700" letterSpacing="1.5"
-                      fill="rgba(147,197,253,0.85)" fontFamily="Inter, sans-serif">
+                      fill={b.accent} fillOpacity="0.85" fontFamily="Inter, sans-serif">
                       {b.label.toUpperCase()}
                     </text>
                   </g>
@@ -181,14 +180,13 @@ export default function AgentWorkflowDemo() {
 
               {EDGES.map((e, i) => {
                 const color = edgeColor(e)
-                const dash = e.loop || e.dashed || e.to === 'fail' ? '6 6' : undefined
+                const active = color === '#18794E' || color === '#1D5FA7'
                 return (
                   <path key={i} d={edgePath(e, byId)} fill="none" stroke={color} strokeWidth={e.loop ? 2 : 2.2}
-                    strokeOpacity={color.startsWith('rgb') ? 0.5 : 0.95}
-                    strokeDasharray={dash}
-                    strokeDashoffset={e.loop ? 0 : undefined}
+                    strokeOpacity={active ? 0.95 : 0.5}
+                    strokeDasharray={e.loop || e.dashed || e.to === 'fail' ? '6 6' : undefined}
                     strokeLinecap="round"
-                    style={color === '#34D399' || color === '#60A5FA' ? { animation: `dash-flow 0.9s linear infinite ${color === '#60A5FA' ? '' : 'reverse'}` } : undefined} />
+                    style={active ? { animation: `dash-flow 0.9s linear infinite ${color === '#1D5FA7' ? '' : 'reverse'}` } : undefined} />
                 )
               })}
 
@@ -197,17 +195,17 @@ export default function AgentWorkflowDemo() {
                 const c = STATE_STYLE[st]
                 const Icon = ICONS[n.id]
                 const isTerminal = n.kind === 'start' || n.kind === 'end'
-                const w = n.width || 168
-                const h = isTerminal ? 32 : 50
+                const w = n.width || NODE_W
+                const h = isTerminal ? 32 : NODE_H
                 return (
                   <g key={n.id} transform={`translate(${n.x - w / 2}, ${n.y - h / 2})`}>
                     {st === 'active' && (
-                      <circle cx={w / 2} cy={h / 2} r={Math.max(w, h) / 2 + 6} fill="none" stroke="#60A5FA"
-                        strokeWidth={2.4} opacity={0.6} className="animate-ping" />
+                      <circle cx={w / 2} cy={h / 2} r={Math.max(w, h) / 2 + 6} fill="none" stroke="#1D5FA7"
+                        strokeWidth={2.4} opacity={0.5} className="animate-ping" />
                     )}
                     <rect width={w} height={h} rx={isTerminal ? 16 : 12} fill={c.fill} stroke={c.stroke} strokeWidth={st === 'active' ? 2 : 1.4} />
                     <g transform={`translate(${isTerminal ? 14 : 48}, ${h / 2})`}>
-                      <circle r={12} fill="rgba(255,255,255,0.12)" stroke={c.stroke} strokeOpacity={0.7} strokeWidth={1} />
+                      <circle r={12} fill="rgba(255,255,255,0.85)" stroke={c.stroke} strokeOpacity={0.6} strokeWidth={1} />
                       <Icon x={-6.5} y={-6.5} width={13} height={13} color={c.text} strokeWidth={2} />
                     </g>
                     <text x={isTerminal ? 40 : 70} y={h / 2 + 4} fontSize={isTerminal ? 12.5 : 11.5}
@@ -215,7 +213,7 @@ export default function AgentWorkflowDemo() {
                       {n.label}
                     </text>
                     {st === 'done' && (
-                      <text x={w - 20} y={h / 2 + 4} fontSize={13} fill="#34D399" fontWeight={700}>✓</text>
+                      <text x={w - 20} y={h / 2 + 4} fontSize={13} fill="#18794E" fontWeight={700}>✓</text>
                     )}
                   </g>
                 )
@@ -225,22 +223,22 @@ export default function AgentWorkflowDemo() {
         </div>
 
         {/* narration panel */}
-        <div className="border-t lg:border-t-0 lg:border-l border-white/10 p-6 flex flex-col">
+        <div className="border-t lg:border-t-0 lg:border-l border-gray-200 bg-gray-50 p-6 flex flex-col">
           <div className="flex items-center justify-between mb-3">
-            <span className="font-mono text-xs text-blue-300">
+            <span className="font-mono text-xs text-gray-500">
               STEP {String(step + 1).padStart(2, '0')} / {STEPS.length}
             </span>
-            <span className="chip border border-amber-400/30 bg-amber-400/10 text-amber-300">
+            <span className="chip border border-amber-300 bg-amber-50 text-amber-700">
               {phaseOfCurrent.toUpperCase()}
             </span>
           </div>
-          <p className="text-lg font-bold text-white">{byId[STEPS[step]]?.label || ''}</p>
-          <p className="text-sm text-blue-100 mt-2 leading-relaxed">{DESCRIPTIONS[STEPS[step]]}</p>
+          <p className="text-lg font-bold text-gray-900">{byId[STEPS[step]]?.label || ''}</p>
+          <p className="text-sm text-gray-600 mt-2 leading-relaxed">{DESCRIPTIONS[STEPS[step]]}</p>
 
           <div className="mt-auto pt-6">
-            <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+            <div className="h-1.5 rounded-full bg-gray-200 overflow-hidden">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-blue-400 to-emerald-400 transition-all duration-500"
+                className="h-full rounded-full bg-gradient-to-r from-railway-accent to-emerald-500 transition-all duration-500"
                 style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
               />
             </div>
@@ -256,17 +254,17 @@ function edgePath(e: GraphEdge, byId: Record<string, GraphNode>): string {
   const b = byId[e.to]
   if (!a || !b) return ''
   if (e.loop) {
-    const x = Math.min(a.x, b.x) - 168
-    return `M ${a.x - 84} ${a.y + 12} H ${x} V ${b.y - 25 + 10} H ${b.x + 84}`
+    const x = Math.min(a.x, b.x) - NODE_W / 2 - 84
+    return `M ${a.x - NODE_W / 2} ${a.y + 12} H ${x} V ${b.y - NODE_H / 2 + 10} H ${b.x + NODE_W / 2}`
   }
   if (e.to === 'fail' || e.from === 'fail') {
     const fx = byId.fail.x
-    return `M ${a.x} ${a.y + 25} C ${(a.x + fx) / 2} ${a.y + 70}, ${(a.x + fx) / 2} ${b.y - 70}, ${fx - 84} ${b.y}`
+    return `M ${a.x} ${a.y + NODE_H / 2} C ${(a.x + fx) / 2} ${a.y + 70}, ${(a.x + fx) / 2} ${b.y - 70}, ${fx - NODE_W / 2} ${b.y}`
   }
   if (a.y === b.y) {
-    const x1 = a.x + 84
-    const x2 = b.x - 84
+    const x1 = a.x + NODE_W / 2
+    const x2 = b.x - NODE_W / 2
     return `M ${x1} ${a.y} C ${x1 + (x2 - x1) / 2} ${a.y}, ${x2 - (x2 - x1) / 2} ${b.y}, ${x2} ${b.y}`
   }
-  return `M ${a.x} ${a.y + 25} C ${a.x} ${a.y + 46}, ${b.x} ${b.y - 46}, ${b.x} ${b.y - 25}`
+  return `M ${a.x} ${a.y + NODE_H / 2} C ${a.x} ${a.y + 46}, ${b.x} ${b.y - 46}, ${b.x} ${b.y - NODE_H / 2}`
 }
