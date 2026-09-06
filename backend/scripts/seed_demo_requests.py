@@ -250,16 +250,27 @@ def clear_requests(db):
     db.commit()
 
 
-def main():
-    init_db()
-    db = SessionLocal()
+def seed_demo_requests(db=None, force: bool = False) -> int:
+    """Idempotently seed the demo request corpus through the real workflow.
+
+    Only runs when there are no existing MaintenanceRequest rows (or when
+    ``force=True``), so it is safe to call from server startup on a fresh DB.
+    Returns the number of requests created.
+    """
+    own_db = db is None
+    if own_db:
+        init_db()
+        db = SessionLocal()
     try:
-        clear_requests(db)
+        if not force:
+            existing = db.query(MaintenanceRequest).count()
+            if existing > 0:
+                return 0
 
         engineer = db.query(User).filter(User.role == "engineer").order_by(User.id).first()
         if not engineer:
             print("No engineer user found - run seed_database.py first.")
-            return
+            return 0
         engineer_id = engineer.id
 
         trains = db.query(Train).order_by(Train.arrival_time).all()
@@ -279,7 +290,7 @@ def main():
             for t in trains
         ]
 
-        rows = []
+        created = 0
         for spec in scenarios(engineer_id):
             r = MaintenanceRequest(status="PENDING", **spec)
             db.add(r)
@@ -320,32 +331,34 @@ def main():
                     report_data=result.get("report", {}),
                 ))
                 r.status = "REPORT_READY"
-                affected = len(sim.get("affected_trains", []) or [])
-                rerouted = int(sim.get("trains_rerouted") or 0)
-                held = int(sim.get("trains_held") or 0)
-                rows.append((r.id, r.section, r.maintenance_type, r.requested_date,
-                             f"{selected.get('start_time')}-{selected.get('end_time')}",
-                             affected, rerouted, held))
+                created += 1
             else:
                 r.status = "FAILED"
-                rows.append((r.id, r.section, r.maintenance_type, r.requested_date,
-                             "-", "-", "-", "-"))
-                print(f"  [FAILED] request {r.id} {r.section}: {result.get('error', 'unknown')}")
+                db.rollback()
+                print(f"  [FAILED] request {r.section}: {result.get('error', 'unknown')}")
 
             db.add(AuditLog(
                 request_id=r.id,
                 actor="AI System",
                 action="ANALYSIS_COMPLETE" if r.status == "REPORT_READY" else "ANALYSIS_FAILED",
-                details=f"Plan V1 generated. Window: {r.status}" if r.status == "REPORT_READY" else "",
+                details="Plan V1 generated." if r.status == "REPORT_READY" else "",
             ))
             db.commit()
 
-        print("\nSeeded demo pre-requests (all reports from real deterministic workflow):\n")
-        header = ("ID", "Section", "Task", "Date", "Window", "Affected", "Rerouted", "Held")
-        print("  " + " | ".join(f"{h:^9}" for h in header))
-        print("  " + "-" * 78)
-        for row in rows:
-            print("  " + " | ".join(f"{str(v):^9}" for v in row))
+        print(f"[seed_demo_requests] created {created} demo request(s) with real workflow reports.")
+        return created
+    finally:
+        if own_db:
+            db.close()
+
+
+def main():
+    init_db()
+    db = SessionLocal()
+    try:
+        clear_requests(db)
+        created = seed_demo_requests(db=db, force=True)
+        print(f"Seeded {created} demo pre-requests (all reports from real deterministic workflow).")
     finally:
         db.close()
 

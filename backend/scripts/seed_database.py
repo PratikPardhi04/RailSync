@@ -71,15 +71,15 @@ def seed_all():
         existing_users = db.query(User).count()
         if existing_users == 0:
             users = [
-            User(name="Rajesh Kumar", email="engineer@railsync.in", password_hash=hash_password("engineer123"), role="engineer"),
-            User(name="Priya Sharma", email="engineer2@railsync.in", password_hash=hash_password("engineer123"), role="engineer"),
-            User(name="Amit Patel", email="engineer3@railsync.in", password_hash=hash_password("engineer123"), role="engineer"),
-            User(name="Suresh Iyer", email="officer@railsync.in", password_hash=hash_password("officer123"), role="officer"),
-            User(name="Vikram Singh", email="officer2@railsync.in", password_hash=hash_password("officer123"), role="officer"),
-        ]
-        db.add_all(users)
-        db.flush()
-        db.commit()
+                User(name="Rajesh Kumar", email="engineer@railsync.in", password_hash=hash_password("engineer123"), role="engineer"),
+                User(name="Priya Sharma", email="engineer2@railsync.in", password_hash=hash_password("engineer123"), role="engineer"),
+                User(name="Amit Patel", email="engineer3@railsync.in", password_hash=hash_password("engineer123"), role="engineer"),
+                User(name="Suresh Iyer", email="officer@railsync.in", password_hash=hash_password("officer123"), role="officer"),
+                User(name="Vikram Singh", email="officer2@railsync.in", password_hash=hash_password("officer123"), role="officer"),
+            ]
+            db.add_all(users)
+            db.flush()
+            db.commit()
 
         # Always keep the demo train corpus in sync with the busy-network
         # scenario in code, even when the database already exists. Demo trains

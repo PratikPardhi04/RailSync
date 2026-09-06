@@ -1,5 +1,6 @@
 import sys
 import os
+import threading
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -24,11 +25,22 @@ from app.api import auth, requests, officer, dashboard, execution, live
 from app.websocket.handler import manager
 
 
+def _seed_demo_requests_background() -> None:
+    """Seed the demo request corpus once on a fresh DB without blocking boot."""
+    try:
+        from scripts.seed_demo_requests import seed_demo_requests
+        seed_demo_requests()
+    except Exception as e:  # noqa: BLE001
+        print(f"[seed_demo_requests] background seeding failed: {e}", flush=True)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
     from scripts.seed_database import seed_all
     seed_all()
+    if os.getenv("SEED_DEMO_REQUESTS", "true").lower() == "true":
+        threading.Thread(target=_seed_demo_requests_background, daemon=True).start()
     yield
 
 
