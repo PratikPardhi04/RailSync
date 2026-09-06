@@ -18,13 +18,6 @@ const ICONS: Record<string, any> = {
   fusion: Sparkles, report: FileText, end: CheckSquare,
 }
 
-const STEPS = [
-  'start', 'validate', 'maintenance', 'traffic', 'priority', 'merge',
-  'historical', 'rag', 'web_research', 'evidence', 'candidate', 'optimize',
-  'simulate', 'routing', 'route_optimize', 'gate', 'validate_constraints',
-  'risk', 'fusion', 'report', 'end',
-]
-
 const DESCRIPTIONS: Record<string, string> = {
   start: 'Engineer submits the block — section, track, work type, preferred window and safety instructions.',
   validate: 'Data validation. Checks the request is complete, the location is real and the window is physically feasible.',
@@ -35,6 +28,7 @@ const DESCRIPTIONS: Record<string, string> = {
   historical: 'Historical agent recalls past blocks and known trouble spots on this corridor.',
   rag: 'RAG retrieve — pulls maintenance SOPs and rules from the knowledge base.',
   web_research: 'Web research — Tavily gathers public evidence (advisory only, never decides).',
+  evidence: 'Evidence check — validates the web research before it is used.',
   candidate: 'Candidate generation — proposes a shortlist of candidate block windows.',
   optimize: 'CP-SAT — Google OR-Tools deterministically selects the safest, least-impact window.',
   simulate: 'Simulate — runs every train against the block: delays, holds and diversions.',
@@ -48,6 +42,39 @@ const DESCRIPTIONS: Record<string, string> = {
   end: 'Pending review — sent to the officer, who can approve or reject (rejection triggers a live replan).',
 }
 
+// An ordered list of phases. Each phase activates one or more nodes at the
+// same time. The Maintenance / Traffic / Priority perception agents run in
+// parallel after validation, so they share a single phase.
+const PHASES: { nodes: string[]; description: string; parallel?: boolean }[] = [
+  { nodes: ['start'], description: DESCRIPTIONS.start },
+  { nodes: ['validate'], description: DESCRIPTIONS.validate },
+  {
+    nodes: ['maintenance', 'traffic', 'priority'],
+    parallel: true,
+    description: 'Three perception agents examine the request in parallel — maintenance sizes the job, traffic scans the timetable, and priority flags the premium trains.',
+  },
+  { nodes: ['merge'], description: DESCRIPTIONS.merge },
+  { nodes: ['historical'], description: DESCRIPTIONS.historical },
+  { nodes: ['rag'], description: DESCRIPTIONS.rag },
+  { nodes: ['web_research'], description: DESCRIPTIONS.web_research },
+  { nodes: ['evidence'], description: DESCRIPTIONS.evidence },
+  { nodes: ['candidate'], description: DESCRIPTIONS.candidate },
+  { nodes: ['optimize'], description: DESCRIPTIONS.optimize },
+  { nodes: ['simulate'], description: DESCRIPTIONS.simulate },
+  { nodes: ['routing'], description: DESCRIPTIONS.routing },
+  { nodes: ['route_optimize'], description: DESCRIPTIONS.route_optimize },
+  { nodes: ['gate'], description: DESCRIPTIONS.gate },
+  { nodes: ['validate_constraints'], description: DESCRIPTIONS.validate_constraints },
+  { nodes: ['risk'], description: DESCRIPTIONS.risk },
+  { nodes: ['fusion'], description: DESCRIPTIONS.fusion },
+  { nodes: ['report'], description: DESCRIPTIONS.report },
+  { nodes: ['end'], description: DESCRIPTIONS.end },
+]
+
+// node id -> phase index
+const PHASE_IDX: Record<string, number> = {}
+PHASES.forEach((p, i) => p.nodes.forEach(n => (PHASE_IDX[n] = i)))
+
 // light theme node states (on white card)
 const STATE_STYLE: Record<string, { fill: string; stroke: string; text: string }> = {
   idle:   { fill: 'rgba(244,246,248,0.75)', stroke: 'rgba(148,163,184,0.7)', text: '#64748B' },
@@ -55,49 +82,49 @@ const STATE_STYLE: Record<string, { fill: string; stroke: string; text: string }
   done:   { fill: 'rgba(24,121,78,0.14)',    stroke: '#18794E',               text: '#14563A' },
 }
 
-const STEP_IDX: Record<string, number> = {}
-STEPS.forEach((id, i) => (STEP_IDX[id] = i))
-
 const SPEEDS = [2200, 1300, 800]
 
 export default function AgentWorkflowDemo() {
-  const [step, setStep] = useState(0)
+  const [phase, setPhase] = useState(0)
   const [playing, setPlaying] = useState(true)
   const [speed, setSpeed] = useState(0)
   const scrollRef = useRef<HTMLDivElement>(null)
   const svgWrapRef = useRef<HTMLDivElement>(null)
 
+  const activePhase = PHASES[phase]
   const phaseOfCurrent = useMemo(() => {
-    const id = STEPS[step]
+    const id = activePhase.nodes[0]
     return BANDS.find(b => b.id === PHASE_OF[id])?.label || ''
-  }, [step])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase])
 
   useEffect(() => {
     if (!playing) return
-    const iv = setInterval(() => setStep(s => (s + 1) % STEPS.length), SPEEDS[speed])
+    const iv = setInterval(() => setPhase(s => (s + 1) % PHASES.length), SPEEDS[speed])
     return () => clearInterval(iv)
   }, [playing, speed])
 
   useEffect(() => {
     if (!scrollRef.current || !svgWrapRef.current) return
-    const node = NODES.find(n => n.id === STEPS[step])
+    const node = NODES.find(n => n.id === activePhase.nodes[0])
     if (!node) return
     const wrap = svgWrapRef.current
     const scale = wrap.clientWidth / 1120
     const top = node.y * scale - scrollRef.current.clientHeight / 2 + 210
     scrollRef.current.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
-  }, [step])
+  }, [phase])
 
-  const stepState = (id: string) => {
-    const cur = STEP_IDX[id]
-    if (cur < step) return 'done'
-    if (cur === step) return 'active'
+  const nodeState = (id: string) => {
+    const cur = PHASE_IDX[id]
+    if (cur === undefined) return 'idle'
+    if (cur < phase) return 'done'
+    if (cur === phase) return 'active'
     return 'idle'
   }
 
   const edgeState = (e: GraphEdge): 'done' | 'active' | 'idle' => {
-    const a = stepState(e.from)
-    const b = stepState(e.to)
+    const a = nodeState(e.from)
+    const b = nodeState(e.to)
     if (a === 'done' && (b === 'done' || b === 'active')) return 'done'
     if (a === 'active') return 'active'
     return 'idle'
@@ -117,7 +144,12 @@ export default function AgentWorkflowDemo() {
     return m
   }, [])
 
-  const advance = (delta: number) => setStep(s => (s + delta + STEPS.length) % STEPS.length)
+  const advance = (delta: number) => setPhase(s => (s + delta + PHASES.length) % PHASES.length)
+
+  const phaseNodes = activePhase.nodes
+  const phaseLabel = phaseNodes.length === 1
+    ? (byId[phaseNodes[0]]?.label || '')
+    : phaseNodes.map(n => byId[n]?.label).join(', ')
 
   return (
     <div className="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden">
@@ -135,7 +167,7 @@ export default function AgentWorkflowDemo() {
             <button onClick={() => setPlaying(p => !p)} className="btn-rail w-10 h-10 !p-0 flex items-center justify-center" title={playing ? 'Pause' : 'Play'}>
               {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
             </button>
-            <button onClick={() => { setPlaying(false); setStep(0) }} className="btn-ghost w-10 h-10 !p-0 flex items-center justify-center" title="Restart">
+            <button onClick={() => { setPlaying(false); setPhase(0) }} className="btn-ghost w-10 h-10 !p-0 flex items-center justify-center" title="Restart">
               <RotateCcw className="w-4 h-4" />
             </button>
             <button onClick={() => { setPlaying(false); advance(-1) }} className="btn-ghost w-10 h-10 !p-0 flex items-center justify-center" title="Previous">
@@ -191,7 +223,7 @@ export default function AgentWorkflowDemo() {
               })}
 
               {NODES.filter(n => n.id !== 'fail').map(n => {
-                const st = stepState(n.id)
+                const st = nodeState(n.id)
                 const c = STATE_STYLE[st]
                 const Icon = ICONS[n.id]
                 const isTerminal = n.kind === 'start' || n.kind === 'end'
@@ -226,20 +258,20 @@ export default function AgentWorkflowDemo() {
         <div className="border-t lg:border-t-0 lg:border-l border-gray-200 bg-gray-50 p-6 flex flex-col">
           <div className="flex items-center justify-between mb-3">
             <span className="font-mono text-xs text-gray-500">
-              STEP {String(step + 1).padStart(2, '0')} / {STEPS.length}
+              STEP {String(phase + 1).padStart(2, '0')} / {PHASES.length}
             </span>
             <span className="chip border border-amber-300 bg-amber-50 text-amber-700">
               {phaseOfCurrent.toUpperCase()}
             </span>
           </div>
-          <p className="text-lg font-bold text-gray-900">{byId[STEPS[step]]?.label || ''}</p>
-          <p className="text-sm text-gray-600 mt-2 leading-relaxed">{DESCRIPTIONS[STEPS[step]]}</p>
+          <p className="text-lg font-bold text-gray-900">{phaseLabel}</p>
+          <p className="text-sm text-gray-600 mt-2 leading-relaxed">{activePhase.description}</p>
 
           <div className="mt-auto pt-6">
             <div className="h-1.5 rounded-full bg-gray-200 overflow-hidden">
               <div
                 className="h-full rounded-full bg-gradient-to-r from-railway-accent to-emerald-500 transition-all duration-500"
-                style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
+                style={{ width: `${((phase + 1) / PHASES.length) * 100}%` }}
               />
             </div>
           </div>
