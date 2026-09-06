@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ShieldCheck, AlertTriangle, RefreshCcw, CheckCircle2, Ban, ClipboardCheck } from 'lucide-react'
 import Layout from '../components/Layout'
+import Skeleton from '../components/Skeleton'
 import StatusBadge, { PriorityBadge, RiskBadge } from '../components/StatusBadge'
 import { dashboard } from '../services/api'
 import type { OfficerDashboard as DashData } from '../types'
@@ -27,7 +28,48 @@ export default function OfficerDashboard() {
     finally { setLoading(false) }
   }
 
-  if (loading) return <Layout title="Officer Portal"><div className="text-center py-12 text-so-dim">Loading...</div></Layout>
+  if (loading) {
+    return (
+      <Layout title="Officer Control Portal">
+        <div className="mb-6">
+          <Skeleton className="h-6 w-56" />
+          <Skeleton className="h-3.5 w-72 mt-2" />
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+          {[0, 1, 2, 3, 4].map(i => (
+            <div key={i} className="rounded-xl border border-gray-200/70 bg-white p-4">
+              <div className="flex items-center justify-between mb-3">
+                <Skeleton className="h-9 w-9 rounded-xl" />
+              </div>
+              <Skeleton className="h-7 w-14 mb-1" />
+              <Skeleton className="h-3 w-28" />
+            </div>
+          ))}
+        </div>
+
+        <div className="mb-4"><Skeleton className="h-4 w-36" /></div>
+        <div className="grid gap-4">
+          {[0, 1, 2].map(i => (
+            <div key={i} className="rounded-xl border border-gray-200/70 bg-white p-5">
+              <div className="flex flex-wrap items-center gap-3 mb-3">
+                <Skeleton className="h-3.5 w-20" />
+                <Skeleton className="h-5 w-24 rounded-full" />
+              </div>
+              <Skeleton className="h-4 w-3/4 mb-2" />
+              <Skeleton className="h-3.5 w-1/2 mb-4" />
+              <div className="flex flex-wrap items-center gap-4">
+                <Skeleton className="h-3.5 w-36" />
+                <Skeleton className="h-3.5 w-24" />
+                <Skeleton className="h-3.5 w-32" />
+                <Skeleton className="h-6 px-5 py-1.5 w-32 ml-auto rounded-lg" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </Layout>
+    )
+  }
   if (!data) return <Layout title="Officer Portal"><div className="text-center py-12 text-so-red">Failed to load</div></Layout>
 
   const { stats } = data

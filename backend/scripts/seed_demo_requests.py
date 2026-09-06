@@ -17,6 +17,17 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+try:
+    from dotenv import load_dotenv
+
+    _here = os.path.dirname(os.path.abspath(__file__))
+    for _candidate in (os.path.join(_here, "..", ".env"), os.path.join(_here, "..", "..", ".env")):
+        if os.path.exists(_candidate):
+            load_dotenv(_candidate)
+            break
+except Exception:
+    pass
+
 from datetime import date, timedelta
 
 from app.database.connection import SessionLocal, init_db
@@ -262,7 +273,11 @@ def seed_demo_requests(db=None, force: bool = False) -> int:
         init_db()
         db = SessionLocal()
     try:
-        if not force:
+        if force:
+            # A force reseed is a full regenerate of the demo corpus: clear any
+            # existing requests first so we never duplicate MR-1..MR-4.
+            clear_requests(db)
+        else:
             existing = db.query(MaintenanceRequest).count()
             if existing > 0:
                 return 0

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FileText, GitBranch, Check } from 'lucide-react'
 import Layout from '../components/Layout'
+import Skeleton from '../components/Skeleton'
 import StatusBadge, { PriorityBadge } from '../components/StatusBadge'
 import OfficerReport from '../components/OfficerReport'
 import { dashboard, requests as requestsApi } from '../services/api'
@@ -120,7 +121,48 @@ export default function EngineerDashboard() {
     }
   }
 
-  if (loading) return <Layout title="Engineer Portal"><div className="text-center py-12 text-gray-500">Loading dashboard...</div></Layout>
+  if (loading) {
+    return (
+      <Layout title="Engineer Portal">
+        <div className="flex items-center justify-between mb-6">
+          <div className="space-y-2">
+            <Skeleton className="h-6 w-44" />
+            <Skeleton className="h-3.5 w-64" />
+          </div>
+          <Skeleton className="h-9 w-40 rounded-md" />
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+          {[0, 1, 2, 3, 4, 5].map(i => (
+            <div key={i} className="rounded-lg border border-gray-200 bg-white p-4">
+              <Skeleton className="h-7 w-12 mb-2" />
+              <Skeleton className="h-3 w-20" />
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-3 w-40" />
+          </div>
+          <div className="p-4 space-y-4">
+            {[0, 1, 2, 3, 4].map(i => (
+              <div key={i} className="flex items-center gap-6">
+                <Skeleton className="h-3.5 w-14" />
+                <Skeleton className="h-3.5 w-44" />
+                <Skeleton className="h-3.5 w-28" />
+                <Skeleton className="h-3.5 w-32" />
+                <Skeleton className="h-5 w-24 rounded-full" />
+                <Skeleton className="h-5 w-24 rounded-full" />
+                <Skeleton className="h-3.5 w-24 ml-auto" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </Layout>
+    )
+  }
   if (!data) return <Layout title="Engineer Portal"><div className="text-center py-12 text-red-500">Failed to load dashboard</div></Layout>
 
   const stats = data.stats

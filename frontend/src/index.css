@@ -392,3 +392,27 @@
 @keyframes dash-flow {
   to { stroke-dashoffset: -24; }
 }
+
+/* skeleton / shadow loading placeholders */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: #E6EAEF;
+  border-radius: 8px;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.65) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+@keyframes skeleton-shimmer {
+  100% { transform: translateX(100%); }
+}

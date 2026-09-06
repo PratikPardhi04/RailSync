@@ -3,6 +3,17 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+try:
+    from dotenv import load_dotenv
+
+    _here = os.path.dirname(os.path.abspath(__file__))
+    for _candidate in (os.path.join(_here, "..", ".env"), os.path.join(_here, "..", "..", ".env")):
+        if os.path.exists(_candidate):
+            load_dotenv(_candidate)
+            break
+except Exception:
+    pass
+
 from datetime import datetime, timedelta
 from app.database.connection import SessionLocal, init_db
 from app.models.models import User, Train
