@@ -1,0 +1,7 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "railsync": "./backend/app/graph/workflow.py:compile_graph"
+  },
+  "env": "./.env"
+}

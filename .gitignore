@@ -1,0 +1,34 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# node
+node_modules/
+dist/
+npm-debug.log*
+frontend/dev.log
+
+# python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+.langgraph_api/
+
+# databases & local data
+*.db
+*.sqlite
+backend/railsync.db.bak
+backend/data/
+
+# logs
+backend/server.log
+backend/server.err.log
+
+# os / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

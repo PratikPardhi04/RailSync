@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: railsync-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:////data/railsync.db
+      - key: SECRET_KEY
+        generateValue: true
+      - key: GROQ_API_KEY
+        sync: false
+      - key: LANGSMITH_API_KEY
+        sync: false
+    disk:
+      name: railsync-data
+      mountPath: /data
+      sizeGB: 1
