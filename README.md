@@ -4,7 +4,7 @@
 
 Built for SIH 2026 - A fully working prototype demonstrating multi-agent AI + optimization + RAG + human-in-the-loop railway maintenance planning.
 
-## Architecture
+# Architecture
 
 ```
 ENGINEER raises maintenance requirement
